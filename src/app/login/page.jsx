@@ -1,14 +1,16 @@
 'use client'
 import { LoginAction } from '@/util/Actions/LoginAction';
+import { clientAuth } from '@/util/Getuser/AuthClient';
 import Cookies from 'js-cookie';
 import { Button } from 'keep-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 const Login = () => {
     const router= useRouter()
+    const user=clientAuth()
     const {
         register,
         handleSubmit,
@@ -22,13 +24,22 @@ const Login = () => {
         }
         const res = await LoginAction(user)
           if (res.status===true) {
-            router.push('/')
-             Cookies.set('user-blog-token',res?.token)
+             router.push('/')
+             router.refresh()
+             Cookies.set('user-blog-token',res?.token,{expires:10})
             alert('Login Successful')
+          }else{
+            alert('Anauthorized Credential')
           }
         console.log(user);
         
       }
+      useEffect(()=>{
+        if (user) {
+          router.push('/')  
+          router.refresh()
+        }
+      },[user,router])
     return (
         <div>
             <div>

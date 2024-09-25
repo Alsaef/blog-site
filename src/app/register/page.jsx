@@ -1,12 +1,14 @@
 'use client'
 import { RegisterAction } from '@/util/Actions/RegisterAction';
+import { clientAuth } from '@/util/Getuser/AuthClient';
 import { Button } from 'keep-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from "react-hook-form"
 const Register = () => {
     const router= useRouter()
+    const user=clientAuth()
     const {
         register,
         handleSubmit,
@@ -28,6 +30,11 @@ const Register = () => {
         console.log(user);
         
       }
+      useEffect(()=>{
+        if (user) {
+          router.push('/')  
+        }
+      },[user,router])
     return (
         <div>
             <div>
