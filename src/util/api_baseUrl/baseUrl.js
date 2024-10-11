@@ -1,14 +1,35 @@
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import { Nexios } from "nexios-http";
+import { cookies } from "next/headers";
 
-export const api=axios.create({
-    baseURL:process.env.NEXT_PUBLIC_API_URL
-})
+const base = `${process.env.NEXT_PUBLIC_API_URL}`
 
-api.interceptors.request.use((config)=>{
-    const token = Cookies.get('user-blog-token')
-    if (token) {
-        config.headers.Authorization=`Bearar ${token}`
+
+const defaultConfig = {
+    baseURL: base,
+    headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+    },
+    timeout: 10000,
+};
+
+const api = new Nexios(defaultConfig);
+
+api.interceptors.request.use((config) => {
+    const accessToken = cookies().get("user-blog-token");
+  
+    if (accessToken) {
+      config.headers = {
+        ...config.headers,
+        Authorization: `Bearer ${accessToken.value}`,
+      };
     }
-    return config
-})
+  
+    return config;
+  });
+
+  api.interceptors.response.use((response) => {
+    return response;
+  });
+  
+  export default api;

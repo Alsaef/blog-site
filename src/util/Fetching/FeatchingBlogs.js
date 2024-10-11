@@ -1,9 +1,10 @@
-const { api } = require("../api_baseUrl/baseUrl")
+import api from "../api_baseUrl/baseUrl"
+
 
 
 export const blogsFetch=async()=>{
 try {
-    const response= await api.get('/api/v1/blogs')
+    const response= await api.get('/api/v1/blogs',{next:{revalidate:1}})
     return response.data 
 } catch (error) {
    return 'data fetching error' ,error||[]
@@ -11,7 +12,7 @@ try {
 }
 export const singleBlogsFetch=async(id)=>{
 try {
-    const response= await api.get(`/api/v1/blogs/${id}`)
+    const response= await api.get(`/api/v1/blogs/${id}`,{next:{revalidate:1}})
     return response.data 
 } catch (error) {
    return 'data fetching error' ,error||[]
